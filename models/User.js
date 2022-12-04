@@ -3,12 +3,14 @@ const { Schema } = mongoose;
 
 const professorSchema = new Schema({
     name: { type: String, required: true },
+    password: { type: String, required: true },
     deptId: { type: mongoose.SchemaTypes.ObjectId, required: true },
     courses: [{ type: String }]
 });
 
 const studentSchema = new Schema({
     name: { type: String, required: true },
+    password: { type: String, required: true },
     deptId: { type: mongoose.SchemaTypes.ObjectId, required: true },
     courses: [{ type: String }]
 });

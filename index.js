@@ -8,8 +8,10 @@ const studentRouter = require('./routes/student');
 const mongoose = require('mongoose');
 const profRouter = require('./routes/professor');
 const deptRouter = require('./routes/department');
-const userRouter = require('./routes/user');
+const authRouter = require('./routes/auth');
+const { validateToken } = require('./services/auth');
 
+require('dotenv').config();
 const PORT = 5000;
 
 const initServer = () => {
@@ -22,10 +24,10 @@ const initServer = () => {
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(fileUpload({ useTempFiles: true, tempFileDir: '/tmp/' }));
 
-    app.use('/student', studentRouter);
-    app.use('/prof', profRouter);
+    app.use('/auth', authRouter);
+    app.use('/student', validateToken, studentRouter);
+    app.use('/prof', validateToken, profRouter);
     app.use('/dept', deptRouter);
-    app.use('/user', userRouter);
 
     app.listen(PORT, () => {
         console.log('Server running in port 5000');

@@ -1,6 +1,7 @@
 const express = require('express');
 const deptRouter = express.Router();
 const Department = require('../models/Department');
+const { validateToken } = require('../services/auth');
 
 deptRouter.get('/all', async (req, res) => {
     try {
@@ -12,7 +13,7 @@ deptRouter.get('/all', async (req, res) => {
     }
 });
 
-deptRouter.get('/allCourses', async (req, res) => {
+deptRouter.get('/allCourses', validateToken, async (req, res) => {
     try {
         const courses = await Course.find({ did: req.body.did });
         return res.status(200).json({ err: false, data: courses });
