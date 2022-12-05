@@ -16,10 +16,10 @@ authRouter.post('/signup', async (req, res) => {
         console.log(userData);
         if (userData.accountType === 'student') {
             const student = Student(userData);
-            student.save();
+            await student.save();
         } else {
             const professor = Professor(userData);
-            professor.save();
+            await professor.save();
         }
         return res.status(201).json({ err: false, msg: 'signup successful!' });
     } catch (e) {
@@ -36,10 +36,9 @@ authRouter.post('/signin', async (req, res) => {
         if (!user) {
             return res.status(404).send({ err: true, msg: 'user not found' });
         } else {
-            console.log(user.password, data.password)
             const isValid = await bcrypt.compare(data.password, user.password);
             if (isValid) {
-                const accessToken = generateToken({ name: user.name, password: user.password });
+                const accessToken = generateToken({ name: user.name, deptId: user.deptId, userId: user.id });
                 const userData = { name: user.name, userId: user.id, deptId: user.deptId, accessToken, type: data.accountType };
                 return res.status(200).send({ err: false, msg: 'signin successful!', userData });
             } else {
