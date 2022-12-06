@@ -1,9 +1,6 @@
 const express = require('express');
-const { unlink } = require('fs');
 const mongoose = require('mongoose');
 const profRouter = express.Router();
-const path = require('path');
-const { Web3Storage, getFilesFromPath } = require('web3.storage');
 const Assignment = require('../models/Assignment');
 const Course = require('../models/Course');
 const { Professor } = require('../models/User');
@@ -35,32 +32,13 @@ profRouter.post('/createCourse', async (req, res) => {
     }
 });
 
-profRouter.post('/uploadAssignment', async (req, res) => {
+profRouter.post('/createAssignment', async (req, res) => {
     try {
         const deptId = req.user.deptId;
         const data = req.body;
-        const fileData = req.files.assignment;
-        const uploadPath = path.join(__dirname, '../', 'tmp/', fileData.name);
-
-        fileData.mv(uploadPath, (err) => {
-            if (err) {
-                console.log('File upload error', err);
-            }
-        });
-        const file = await getFilesFromPath(uploadPath);
-        const client = new Web3Storage({ token: process.env.IPFS_STORAGE_TOKEN });
-        const cid = await client.put(file, { name: fileData.name });
-        const assignmentData = { name: data.name, courseId: data.courseId, deptId, fileCid: cid };
+        const assignmentData = { name: data.name, courseId: data.courseId, deptId, fileCid: data.cid };
         const assignment = new Assignment(assignmentData);
         await assignment.save();
-
-        unlink(uploadPath, (err) => {
-            if (err) {
-                console.log('Error deleting file');
-            } else {
-                console.log('File deleted from temp directory');
-            }
-        });
         return res.status(201).json({ err: false, msg: 'Created assignment' });
     } catch (e) {
         console.log(e);
