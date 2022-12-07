@@ -6,7 +6,8 @@ const submissionSchema = Schema({
     userId: { type: mongoose.SchemaTypes.ObjectId, required: true, },
     courseId: { type: mongoose.SchemaTypes.ObjectId, required: true },
     assignmentId: { type: mongoose.SchemaTypes.ObjectId, required: true },
-    fileCid: { type: String, required: true }
+    grade: { type: Number, required: true },
+    fileCid: { type: String, required: true },
 });
 
 module.exports = mongoose.model('Submission', submissionSchema);

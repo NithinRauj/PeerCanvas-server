@@ -37,7 +37,7 @@ studentRouter.get('/enrolledCourses', async (req, res) => {
 studentRouter.post('/uploadSubmission', async (req, res) => {
     try {
         const submissionData = req.body;
-        const submission = new Submission(submissionData);
+        const submission = new Submission({ ...submissionData, grade: 0 });
         await submission.save();
         return res.status(201).json({ err: false, msg: 'Created submission' });
     } catch (e) {
